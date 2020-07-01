@@ -12,7 +12,7 @@ namespace InvalidNamespaceLol
     {
         /* 
          * CharmHelper
-         * v 1.0.0.0
+         * v 1.0.0.1
          */
 
         public List<int> charmIDs { get; private set; }
@@ -28,10 +28,9 @@ namespace InvalidNamespaceLol
          * "newCharm_{ID}" PlayerData bool(s)
          * "equippedCharm_{ID}" PlayerData bool(s)
          * "charmCost_{ID}" PlayerData int(s)
-         * Add Sprite to indizes {ID} of CharmIconList.Instance.spriteList
-         * ... or make them be added right away on line 60
          * 
          * Set amount of custom charms wanted in customCharms int
+         * Set sprites of custom charms wanted in customSprites Sprite[]
          * IDs can be pulled from the charmIDs list
          */
 
