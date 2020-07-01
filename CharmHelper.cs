@@ -10,6 +10,11 @@ namespace InvalidNamespaceLol
 {
     public class CharmHelper
     {
+        /* 
+         * CharmHelper
+         * v 1.0.0.0
+         */
+
         public List<int> charmIDs { get; private set; }
         public int customCharms;
         Sprite[] customSprites;

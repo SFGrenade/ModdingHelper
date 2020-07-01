@@ -7,6 +7,11 @@ namespace InvalidNamespaceLol
 {
     public class AchievementHelper
     {
+        /* 
+         * AchievementHelper
+         * v 1.0.0.0
+         */
+
         public AchievementHelper()
         {
             On.UIManager.RefreshAchievementsList += OnUIManagerRefreshAchievementsList;
