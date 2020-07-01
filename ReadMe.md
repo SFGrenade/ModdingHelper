@@ -1,3 +1,3 @@
-# MenuThemesInGame
+# ModdingHelper
 
-This is a mod for the game Hollow Knight
+This is a collection of helper classes for Hollow Knight mods
