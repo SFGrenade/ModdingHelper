@@ -12,12 +12,12 @@ namespace InvalidNamespaceLol
     {
         /* 
          * CharmHelper
-         * v 1.0.0.1
+         * v 1.0.1.0
          */
 
         public List<int> charmIDs { get; private set; }
         public int customCharms;
-        Sprite[] customSprites;
+        public Sprite[] customSprites;
 
         /*
          * Needed on user-part:
@@ -44,10 +44,26 @@ namespace InvalidNamespaceLol
             charmIDs = new List<int>();
 
             On.CharmIconList.Start += OnCharmIconListStart;
+            On.PlayerData.CalculateNotchesUsed += OnPlayerDataCalculateNotchesUsed;
+        }
+
+        private void OnPlayerDataCalculateNotchesUsed(On.PlayerData.orig_CalculateNotchesUsed orig, PlayerData self)
+        {
+            orig(self);
+            int num = 0;
+            foreach (int i in this.charmIDs)
+            {
+                if (self.GetBool("equippedCharm_" + i))
+                {
+                    num += self.GetInt("charmCost_" + i);
+                }
+            }
+            self.SetInt("charmSlotsFilled", self.GetInt("charmSlotsFilled") + num);
         }
 
         private void OnCharmIconListStart(On.CharmIconList.orig_Start orig, CharmIconList self)
         {
+
             var invGo = findChild(GameCameras.instance.hudCamera.gameObject, "Inventory").gameObject;
             var charmsGo = findChild(invGo, "Charms").gameObject;
             var charmsFsm = charmsGo.LocateMyFSM("UI Charms");
