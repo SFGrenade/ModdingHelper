@@ -2,48 +2,79 @@
 using GlobalEnums;
 using UnityEngine;
 using Logger = Modding.Logger;
+using System.Collections.Generic;
 
-namespace InvalidNamespaceLol
+namespace TestOfTeamwork
 {
+    public struct s_CustomAchievement
+    {
+        public string key;
+        public Sprite sprite;
+
+        public string titleConvo;
+        public string textConvo;
+
+        public bool hidden;
+    }
+
     public class AchievementHelper
     {
         /* 
          * AchievementHelper
-         * v 1.0.0.0
+         * v 1.0.1.0
+         */
+
+        public List<s_CustomAchievement> customAchievements;
+
+        /* 
+         * Example inclusion in your mod's Initialize() function:
+         * 
+         * achHelper = new AchievementHelper();
+         * achHelper.customAchievements.Add(new s_CustomAchievement() {
+         *     key = "",
+         *     sprite = new Sprite(),
+         *     titleConvo = "",
+         *     textConvo = "",
+         *     hidden = false
+         * });
          */
 
         public AchievementHelper()
         {
+            customAchievements = new List<s_CustomAchievement>();
+
             On.UIManager.RefreshAchievementsList += OnUIManagerRefreshAchievementsList;
             On.AchievementHandler.Awake += OnAchievementHandlerAwake;
         }
 
         private void initAchievements(AchievementsList list)
         {
-            string Ach1_Key = "Achievement_Key_Here";
-            string Ach1_Text_Key = "Achievement_Text_Convo_Here";
-            string Ach1_Title_Key = "Achievement_Title_Convo_Here";
-            Sprite Ach1_Sprite = new Sprite();
-
-            Achievement ach1 = new Achievement();
-            ach1.key = Ach1_Key;
-            ach1.type = AchievementType.Normal;
-            ach1.earnedIcon = Ach1_Sprite;
-            ach1.unearnedIcon = Ach1_Sprite;
-            ach1.localizedText = Ach1_Text_Key;
-            ach1.localizedTitle = Ach1_Title_Key;
-
-            bool containsAch1 = false;
-
-            foreach (var ach in list.achievements)
+            foreach (var ca in this.customAchievements)
             {
-                if (ach.key == Ach1.key)
-                    containsAch1 = true;
-            }
+                Achievement customAch = new Achievement
+                {
+                    key = ca.key,
+                    type = (ca.hidden ? AchievementType.Hidden : AchievementType.Normal),
+                    earnedIcon = ca.sprite,
+                    unearnedIcon = ca.sprite,
+                    localizedText = ca.textConvo,
+                    localizedTitle = ca.titleConvo
+                };
 
-            if (!containsAch1)
-            {
-                list.achievements.Add(Ach1);
+                bool containsCustomAch = false;
+
+                foreach (var ach in list.achievements)
+                {
+                    if (ach.key == customAch.key)
+                    {
+                        containsCustomAch = true;
+                    }
+                }
+
+                if (!containsCustomAch)
+                {
+                    list.achievements.Add(customAch);
+                }
             }
         }
         private void OnAchievementHandlerAwake(On.AchievementHandler.orig_Awake orig, AchievementHandler self)
