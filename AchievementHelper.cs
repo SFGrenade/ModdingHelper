@@ -4,7 +4,7 @@ using UnityEngine;
 using Logger = Modding.Logger;
 using System.Collections.Generic;
 
-namespace TestOfTeamwork
+namespace InvalidNamespaceLol
 {
     public struct s_CustomAchievement
     {
