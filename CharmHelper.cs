@@ -12,7 +12,7 @@ namespace InvalidNamespaceLol
     {
         /* 
          * CharmHelper
-         * v 1.0.1.0
+         * v 1.1.0.0
          */
 
         public List<int> charmIDs { get; private set; }
@@ -210,6 +210,14 @@ namespace InvalidNamespaceLol
                         bbOldPos = backBoardTile.localPosition;
                         float y = ((bbOldPos.y - (-8.34f)) * rowMultiplicator) + (-8.34f);
                         backBoardTile.localPosition = new Vector3(bbOldPos.x, y, bbOldPos.z);
+                        if (((10 * i) + j) > finalCharmAmount)
+                        {
+                            backBoardTile.GetComponent<SpriteRenderer>().color = new Color(116f / 255f, 116f / 255f, 116f / 255f, 0f / 255f);
+                        }
+                        else
+                        {
+                            backBoardTile.GetComponent<SpriteRenderer>().color = new Color(116f / 255f, 116f / 255f, 116f / 255f, 255f / 255f);
+                        }
                     }
                     collectedCharmTile = findChild(collectedCharmsGo, ((10 * i) + j).ToString());
                     if (collectedCharmTile != null)
