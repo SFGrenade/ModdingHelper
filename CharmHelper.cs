@@ -63,6 +63,7 @@ namespace InvalidNamespaceLol
 
         private void OnCharmIconListStart(On.CharmIconList.orig_Start orig, CharmIconList self)
         {
+            Log("!OnCharmIconListStart");
 
             var invGo = findChild(GameCameras.instance.hudCamera.gameObject, "Inventory").gameObject;
             var charmsGo = findChild(invGo, "Charms").gameObject;
@@ -70,6 +71,7 @@ namespace InvalidNamespaceLol
 
             var tmpCollectedCharmsGo = findChild(charmsGo, "Collected Charms").gameObject;
             int numCharms = tmpCollectedCharmsGo.transform.childCount - 1;
+            Log("numCharms " + numCharms);
 
             int finalCharmAmount = numCharms + customCharms;
 
@@ -127,7 +129,7 @@ namespace InvalidNamespaceLol
             GameObject bbPrefab;
             int bbPrefabNum;
             Transform bbT1, bbT2;
-            for (int i = numCharms + 1; i <= (rows * 10); i++)
+            for (int i = (numCharms + 1); i <= (rows * 10); i++)
             {
                 bbPrefabNum = ((i - 1) % 20) + 21;
                 if (findChild(backboardsGo, "BB " + i) == null)
@@ -238,6 +240,7 @@ namespace InvalidNamespaceLol
                 }
             }
 
+            Log("~OnCharmIconListStart");
             orig(self);
         }
 
@@ -254,6 +257,15 @@ namespace InvalidNamespaceLol
             }
 
             return ret;
+        }
+
+        private void Log(string message)
+        {
+            Logger.Log($"[{GetType().FullName.Replace(".", "]:[")}] - {message}");
+        }
+        private void Log(object message)
+        {
+            Logger.Log($"[{GetType().FullName.Replace(".", "]:[")}] - {message.ToString()}");
         }
     }
 }

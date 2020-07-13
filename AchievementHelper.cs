@@ -79,16 +79,20 @@ namespace InvalidNamespaceLol
         }
         private void OnAchievementHandlerAwake(On.AchievementHandler.orig_Awake orig, AchievementHandler self)
         {
+            Log("!AchievementHandler Awake");
             orig(self);
             initAchievements(self.achievementsList);
+            Log("~AchievementHandler Awake");
         }
         private void OnUIManagerRefreshAchievementsList(On.UIManager.orig_RefreshAchievementsList orig, UIManager self)
         {
+            Log("!UIManager RefreshAchievementsList");
             initAchievements(GameManager.instance.achievementHandler.achievementsList);
             initMenuAchievements(self);
             orig(self);
 
             On.UIManager.RefreshAchievementsList -= OnUIManagerRefreshAchievementsList;
+            Log("~UIManager RefreshAchievementsList");
         }
         private void initMenuAchievements(UIManager manager)
         {
@@ -154,6 +158,15 @@ namespace InvalidNamespaceLol
                     menuAch.text.text = Language.Language.Get("HIDDEN_ACHIEVEMENT", "Achievements");
                 }
             }
+        }
+
+        private void Log(string message)
+        {
+            Logger.Log($"[{GetType().FullName.Replace(".", "]:[")}] - {message}");
+        }
+        private void Log(object message)
+        {
+            Logger.Log($"[{GetType().FullName.Replace(".", "]:[")}] - {message.ToString()}");
         }
     }
 }

@@ -94,5 +94,14 @@ namespace InvalidNamespaceLol
                 }
             }
         }
+
+        private void Log(string message)
+        {
+            Logger.Log($"[{GetType().FullName.Replace(".", "]:[")}] - {message}");
+        }
+        private void Log(object message)
+        {
+            Logger.Log($"[{GetType().FullName.Replace(".", "]:[")}] - {message.ToString()}");
+        }
     }
 }
