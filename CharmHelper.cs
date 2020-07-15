@@ -32,6 +32,7 @@ namespace InvalidNamespaceLol
          * Set amount of custom charms wanted in customCharms int
          * Set sprites of custom charms wanted in customSprites Sprite[]
          * IDs can be pulled from the charmIDs list
+         * Or see example at CharmHelper_Example.cs
          */
 
         public CharmHelper()
