@@ -12,7 +12,7 @@ namespace InvalidNamespaceLol
     {
         /* 
          * CharmHelper
-         * v 1.1.0.0
+         * v 1.1.1.0
          */
 
         public List<int> charmIDs { get; private set; }
@@ -32,7 +32,6 @@ namespace InvalidNamespaceLol
          * Set amount of custom charms wanted in customCharms int
          * Set sprites of custom charms wanted in customSprites Sprite[]
          * IDs can be pulled from the charmIDs list
-         * Or see example at CharmHelper_Example.cs
          */
 
         public CharmHelper()
@@ -46,10 +45,45 @@ namespace InvalidNamespaceLol
 
             On.CharmIconList.Start += OnCharmIconListStart;
             On.PlayerData.CalculateNotchesUsed += OnPlayerDataCalculateNotchesUsed;
+            On.BuildEquippedCharms.BuildCharmList += OnBuildEquippedCharmsBuildCharmList;
+        }
+
+        private void OnBuildEquippedCharmsBuildCharmList(On.BuildEquippedCharms.orig_BuildCharmList orig, BuildEquippedCharms self)
+        {
+            Log("!OnBECBCL");
+
+            #region Edit BuildEquippedCharms
+            int numCharms = self.gameObjectList.Count;
+            for (int i = 0; i < customCharms; i++)
+            {
+                try
+                {
+                    var t = self.gameObjectList[numCharms + i];
+                }
+                catch
+                {
+                    var equippedCharmPrefab = GameObject.Instantiate(self.gameObjectList[0]);
+                    SetInactive(equippedCharmPrefab);
+                    equippedCharmPrefab.name = "Charm " + (numCharms + i + 1).ToString();
+
+                    var ci = equippedCharmPrefab.GetComponent<CharmItem>();
+
+                    var cd = equippedCharmPrefab.GetComponent<CharmDisplay>();
+                    cd.id = (numCharms + i + 1);
+
+                    self.gameObjectList.Add(equippedCharmPrefab);
+                }
+            }
+            #endregion
+            orig(self);
+
+            Log("~OnBECBCL");
         }
 
         private void OnPlayerDataCalculateNotchesUsed(On.PlayerData.orig_CalculateNotchesUsed orig, PlayerData self)
         {
+            Log("!OnPDCNU");
+
             orig(self);
             int num = 0;
             foreach (int i in this.charmIDs)
@@ -60,11 +94,13 @@ namespace InvalidNamespaceLol
                 }
             }
             self.SetInt("charmSlotsFilled", self.GetInt("charmSlotsFilled") + num);
+
+            Log("~OnPDCNU");
         }
 
         private void OnCharmIconListStart(On.CharmIconList.orig_Start orig, CharmIconList self)
         {
-            Log("!OnCharmIconListStart");
+            Log("!OnCILS");
 
             var invGo = findChild(GameCameras.instance.hudCamera.gameObject, "Inventory").gameObject;
             var charmsGo = findChild(invGo, "Charms").gameObject;
@@ -82,6 +118,7 @@ namespace InvalidNamespaceLol
             for (int i = 0; i < customCharms; i++)
             {
                 tmpSpriteList[numCharms + i + 1] = customSprites[i % customSprites.Length];
+                SetInactive(tmpSpriteList[numCharms + i + 1]);
                 charmIDs.Add(numCharms + i + 1);
             }
             cil.spriteList = tmpSpriteList;
@@ -180,22 +217,6 @@ namespace InvalidNamespaceLol
                 }
             }
             #endregion
-            #region Edit BuildEquippedCharms
-            var bec = GameObject.FindObjectOfType<BuildEquippedCharms>();
-            GameObject equippedCharmPrefab;
-            for (int i = 0; i < customCharms; i++)
-            {
-                equippedCharmPrefab = GameObject.Instantiate(bec.gameObjectList[i]);
-                equippedCharmPrefab.name = "Charm " + (numCharms + i + 1).ToString();
-
-                var ci = equippedCharmPrefab.GetComponent<CharmItem>();
-
-                var cd = equippedCharmPrefab.GetComponent<CharmDisplay>();
-                cd.id = (numCharms + i + 1);
-
-                bec.gameObjectList.Add(equippedCharmPrefab);
-            }
-            #endregion
 
             // Shift rows
             float rowMultiplicator = ((float)Math.Ceiling(((float)numCharms) / 10.0)) / ((float)rows);
@@ -241,7 +262,7 @@ namespace InvalidNamespaceLol
                 }
             }
 
-            Log("~OnCharmIconListStart");
+            Log("~OnCILS");
             orig(self);
         }
 
@@ -258,6 +279,13 @@ namespace InvalidNamespaceLol
             }
 
             return ret;
+        }
+        private static void SetInactive(UnityEngine.Object go)
+        {
+            if (go != null)
+            {
+                UnityEngine.Object.DontDestroyOnLoad(go);
+            }
         }
 
         private void Log(string message)
