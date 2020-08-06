@@ -6,6 +6,7 @@ using Modding;
 using ModCommon;
 using UnityEngine;
 using System.Security.Cryptography;
+using SFCore;
 
 namespace InvalidNamespaceLol
 {
