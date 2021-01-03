@@ -34,29 +34,34 @@ public class PatchMusicRegionsEditor : Editor
 
     public override void OnInspectorGUI()
     {
-        PatchMusicRegions pmr = (PatchMusicRegions)target;
+        serializedObject.Update();
         
-        pmr.SnapshotIndex = EditorGUILayout.Popup("Snapshot Name", pmr.SnapshotIndex, _choices);
-        pmr.SnapshotName = _choices[pmr.SnapshotIndex];
-        //EditorUtility.SetDirty(target);
+        //int index = EditorGUILayout.Popup("Snapshot Name", serializedObject.FindProperty("SnapshotIndex").intValue, _choices);
 
-        pmr.MusicRegionSet = EditorGUILayout.TextField("Music Region Set", pmr.MusicRegionSet);
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("SnapshotIndex"), new GUIContent("Snapshot"));
+        //serializedObject.FindProperty("SnapshotIndex").intValue = index;
+        serializedObject.FindProperty("SnapshotName").stringValue = _choices[serializedObject.FindProperty("SnapshotIndex").intValue];
 
-        pmr.Main = (AudioClip) EditorGUILayout.ObjectField("Main", pmr.Main, typeof(AudioClip), false);
-        pmr.Action = (AudioClip) EditorGUILayout.ObjectField("Action", pmr.Action, typeof(AudioClip), false);
-        pmr.Sub = (AudioClip) EditorGUILayout.ObjectField("Sub", pmr.Sub, typeof(AudioClip), false);
-        pmr.Tension = (AudioClip) EditorGUILayout.ObjectField("Tension", pmr.Tension, typeof(AudioClip), false);
-        pmr.MainAlt = (AudioClip) EditorGUILayout.ObjectField("Main Alt", pmr.MainAlt, typeof(AudioClip), false);
-        pmr.Extra = (AudioClip) EditorGUILayout.ObjectField("Extra", pmr.Extra, typeof(AudioClip), false);
-        pmr.Main2 = (AudioClip) EditorGUILayout.ObjectField("Main 2", pmr.Main2, typeof(AudioClip), false);
-        pmr.Action2 = (AudioClip) EditorGUILayout.ObjectField("Action 2", pmr.Action2, typeof(AudioClip), false);
-        pmr.Sub2 = (AudioClip) EditorGUILayout.ObjectField("Sub 2", pmr.Sub2, typeof(AudioClip), false);
-        pmr.Tension2 = (AudioClip) EditorGUILayout.ObjectField("Tension 2", pmr.Tension2, typeof(AudioClip), false);
-        pmr.MainAlt2 = (AudioClip) EditorGUILayout.ObjectField("Main Alt 2", pmr.MainAlt2, typeof(AudioClip), false);
-        pmr.Extra2 = (AudioClip) EditorGUILayout.ObjectField("Extra 2", pmr.Extra2, typeof(AudioClip), false);
-        pmr.Dirtmouth = EditorGUILayout.Toggle("Dirtmouth", pmr.Dirtmouth);
-        pmr.MinesDelay = EditorGUILayout.Toggle("Mines Delay", pmr.MinesDelay);
-        pmr.EnterTrackEvent = EditorGUILayout.TextField("Enter Track Event", pmr.EnterTrackEvent);
-        pmr.EnterTransitionTime = EditorGUILayout.FloatField("Enter Transition Time", pmr.EnterTransitionTime);
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("MusicRegionSet"), new GUIContent("Music Region Set"));
+
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("Main"), new GUIContent("Main"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("Action"), new GUIContent("Action"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("Sub"), new GUIContent("Sub"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("Tension"), new GUIContent("Tension"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("MainAlt"), new GUIContent("Main Alt"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("Extra"), new GUIContent("Extra"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("Main2"), new GUIContent("Main 2"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("Action2"), new GUIContent("Action 2"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("Sub2"), new GUIContent("Sub 2"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("Tension2"), new GUIContent("Tension 2"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("MainAlt2"), new GUIContent("Main Alt 2"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("Extra2"), new GUIContent("Extra 2"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("Dirtmouth"), new GUIContent("Dirtmouth"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("MinesDelay"), new GUIContent("Mines Delay"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("EnterTrackEvent"), new GUIContent("Enter Track Event"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("EnterTransitionTime"), new GUIContent("Enter Transition Time"));
+        
+        //Save all changes made on the inspector
+        serializedObject.ApplyModifiedProperties();
     }
 }
