@@ -7,6 +7,7 @@ using ModCommon;
 using UnityEngine;
 using System.Security.Cryptography;
 using SFCore;
+using SFCore.Generics;
 
 namespace InvalidNamespaceLol
 {
@@ -23,61 +24,22 @@ namespace InvalidNamespaceLol
     {
     }
 
-    public class CharmHelperExample : Mod<CHESaveSettings, CHEGlobalSettings>
+    public class CharmHelperExample : FullSettingsMod<CHESaveSettings, CHEGlobalSettings>
     {
-        internal static CharmHelperExample Instance;
-
         public CharmHelper charmHelper { get; private set; }
 
-        // Thx to 56
-        public override string GetVersion()
-        {
-            Assembly asm = Assembly.GetExecutingAssembly();
-
-            string ver = asm.GetName().Version.ToString();
-
-            SHA1 sha1 = SHA1.Create();
-            FileStream stream = File.OpenRead(asm.Location);
-
-            byte[] hashBytes = sha1.ComputeHash(stream);
-
-            string hash = BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
-
-            stream.Close();
-            sha1.Clear();
-
-            string ret = $"{ver}-{hash.Substring(0, 6)}";
-
-            return ret;
-        }
+        public override string GetVersion() => SFCore.Utils.GetVersion(Assembly.GetExecutingAssembly());
 
         public override void Initialize()
         {
             Log("Initializing");
-            Instance = this;
 
-            initGlobalSettings();
             charmHelper = new CharmHelper();
             charmHelper.customCharms = 4;
             charmHelper.customSprites = new Sprite[] { new Sprite(), new Sprite(), new Sprite(), new Sprite() };
             initCallbacks();
 
             Log("Initialized");
-        }
-
-        private void initGlobalSettings()
-        {
-            // Found in a project, might help saving, don't know, but who cares
-            // Global Settings
-        }
-
-        private void initSaveSettings(SaveGameData data)
-        {
-            // Charms
-            Settings.gotCharms = Settings.gotCharms;
-            Settings.newCharms = Settings.newCharms;
-            Settings.equippedCharms = Settings.equippedCharms;
-            Settings.charmCosts = Settings.charmCosts;
         }
 
         private void initCallbacks()
@@ -87,7 +49,6 @@ namespace InvalidNamespaceLol
             ModHooks.Instance.SetPlayerBoolHook += OnSetPlayerBoolHook;
             ModHooks.Instance.GetPlayerIntHook += OnGetPlayerIntHook;
             ModHooks.Instance.SetPlayerIntHook += OnSetPlayerIntHook;
-            ModHooks.Instance.AfterSavegameLoadHook += initSaveSettings;
             ModHooks.Instance.ApplicationQuitHook += SaveCHEGlobalSettings;
             ModHooks.Instance.LanguageGetHook += OnLanguageGetHook;
         }
@@ -97,10 +58,16 @@ namespace InvalidNamespaceLol
             SaveGlobalSettings();
         }
 
+        #region Charm Names and Descriptions
+
+        private string[] charmNames = { "Charm Name 1", "Charm Name 2", "Charm Name 3", "Charm Name 4" };
+        private string[] charmDescriptions = { "Charm Description 1", "Charm Description 2", "Charm Description 3", "Charm Description 4" };
+
+        #endregion
+
         #region Get/Set Hooks
         private string OnLanguageGetHook(string key, string sheet)
         {
-            //Log($"Sheet: {sheet}; Key: {key}");
             // There probably is a better way to do this, but for now take this
             #region Custom Charms
             if (key.StartsWith("CHARM_NAME_"))
@@ -108,7 +75,7 @@ namespace InvalidNamespaceLol
                 int charmNum = int.Parse(key.Split('_')[2]);
                 if (charmHelper.charmIDs.Contains(charmNum))
                 {
-                    return "CHARM NAME";
+                    return charmNames[charmHelper.charmIDs.IndexOf(charmNum)];
                 }
             }
             if (key.StartsWith("CHARM_DESC_"))
@@ -116,7 +83,7 @@ namespace InvalidNamespaceLol
                 int charmNum = int.Parse(key.Split('_')[2]);
                 if (charmHelper.charmIDs.Contains(charmNum))
                 {
-                    return "CHARM DESC";
+                    return charmDescriptions[charmHelper.charmIDs.IndexOf(charmNum)];
                 }
             }
             #endregion
@@ -224,7 +191,6 @@ namespace InvalidNamespaceLol
             {
                 PlayerData.instance.SetIntInternal(target, val);
             }
-            //Log("Int  set: " + target + "=" + val.ToString());
         }
         #endregion
     }
